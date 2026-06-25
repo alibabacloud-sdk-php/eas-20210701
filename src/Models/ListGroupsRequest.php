@@ -14,6 +14,11 @@ class ListGroupsRequest extends Model
     public $filter;
 
     /**
+     * @var string[]
+     */
+    public $labels;
+
+    /**
      * @var string
      */
     public $order;
@@ -44,6 +49,7 @@ class ListGroupsRequest extends Model
     public $workspaceId;
     protected $_name = [
         'filter' => 'Filter',
+        'labels' => 'Labels',
         'order' => 'Order',
         'pageNumber' => 'PageNumber',
         'pageSize' => 'PageSize',
@@ -54,6 +60,9 @@ class ListGroupsRequest extends Model
 
     public function validate()
     {
+        if (\is_array($this->labels)) {
+            Model::validateArray($this->labels);
+        }
         parent::validate();
     }
 
@@ -62,6 +71,15 @@ class ListGroupsRequest extends Model
         $res = [];
         if (null !== $this->filter) {
             $res['Filter'] = $this->filter;
+        }
+
+        if (null !== $this->labels) {
+            if (\is_array($this->labels)) {
+                $res['Labels'] = [];
+                foreach ($this->labels as $key1 => $value1) {
+                    $res['Labels'][$key1] = $value1;
+                }
+            }
         }
 
         if (null !== $this->order) {
@@ -101,6 +119,15 @@ class ListGroupsRequest extends Model
         $model = new self();
         if (isset($map['Filter'])) {
             $model->filter = $map['Filter'];
+        }
+
+        if (isset($map['Labels'])) {
+            if (!empty($map['Labels'])) {
+                $model->labels = [];
+                foreach ($map['Labels'] as $key1 => $value1) {
+                    $model->labels[$key1] = $value1;
+                }
+            }
         }
 
         if (isset($map['Order'])) {
